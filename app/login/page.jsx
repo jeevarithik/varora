@@ -10,6 +10,7 @@ export default function LoginPage() {
   const { data: session } = useSession();
 
   const [isLogin, setIsLogin] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -28,6 +29,7 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage("");
 
     try {
       if (isLogin) {
@@ -35,10 +37,14 @@ export default function LoginPage() {
           email: formData.email,
           password: formData.password,
           redirect: false,
+          callbackUrl: "/workspace",
         });
 
-        if (!res.error) {
-          router.push("/workspace");
+        if (res?.error) {
+          setErrorMessage("Invalid email or password.");
+        } else {
+          router.replace("/workspace");
+          router.refresh();
         }
       } else {
         const signupRes = await fetch("/api/signup", {
@@ -54,28 +60,35 @@ export default function LoginPage() {
             email: formData.email,
             password: formData.password,
             redirect: false,
+            callbackUrl: "/workspace",
           });
 
-          if (!loginRes.error) {
-            router.push("/workspace");
+          if (loginRes?.error) {
+            setErrorMessage("Account created, but sign in failed.");
+          } else {
+            router.replace("/workspace");
+            router.refresh();
           }
+        } else {
+          setErrorMessage(data.error || "Sign up failed.");
         }
       }
     } catch (error) {
       console.error(error);
+      setErrorMessage("Unable to authenticate right now. Please try again.");
     }
     setLoading(false);
   };
 
   return (
-    <main className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-black text-white selection:bg-white/30">
+    <main className="relative flex min-h-dvh w-full items-center justify-center overflow-hidden bg-black text-white selection:bg-white/30">
       {/* Subtler Radial Glow */}
       <div className="absolute inset-0 z-0 flex items-center justify-center">
-        <div className="h-[40rem] w-[40rem] rounded-full bg-white/[0.015] blur-[120px]" />
+        <div className="h-160 w-160 rounded-full bg-white/1.5 blur-[120px]" />
       </div>
 
       {/* Subtle Grid / Noise */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
 
       <div className="container relative z-10 flex items-center justify-center gap-20 px-6">
         
@@ -89,7 +102,7 @@ export default function LoginPage() {
         </div>
 
         {/* The Login Card */}
-        <div className="w-full max-w-md shrink-0 rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-2xl backdrop-blur-xl md:p-8">
+        <div className="w-full max-w-md shrink-0 rounded-3xl border border-white/10 bg-white/3 p-6 shadow-2xl backdrop-blur-xl md:p-8">
           
           {/* Small Branding Top */}
           <div className="mb-8 flex items-center gap-3">
@@ -120,7 +133,7 @@ export default function LoginPage() {
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-sm text-white placeholder-zinc-600 outline-none transition-colors focus:border-white/30 focus:ring-1 focus:ring-white/30 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-white [&:-webkit-autofill]:transition-colors [&:-webkit-autofill]:duration-[9999s] [color-scheme:dark]"
+                  className="h-12 w-full rounded-2xl border border-white/10 bg-white/4 px-4 text-sm text-white placeholder-zinc-600 outline-none transition-colors focus:border-white/30 focus:ring-1 focus:ring-white/30 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-white [&:-webkit-autofill]:transition-colors [&:-webkit-autofill]:duration-[9999s] scheme-dark"
                 />
               </div>
             )}
@@ -132,7 +145,7 @@ export default function LoginPage() {
                 placeholder="name@example.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-sm text-white placeholder-zinc-600 outline-none transition-colors focus:border-white/30 focus:ring-1 focus:ring-white/30 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-white [&:-webkit-autofill]:transition-colors [&:-webkit-autofill]:duration-[9999s] [color-scheme:dark]"
+                className="h-12 w-full rounded-2xl border border-white/10 bg-white/4 px-4 text-sm text-white placeholder-zinc-600 outline-none transition-colors focus:border-white/30 focus:ring-1 focus:ring-white/30 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-white [&:-webkit-autofill]:transition-colors [&:-webkit-autofill]:duration-[9999s] scheme-dark"
               />
             </div>
 
@@ -146,7 +159,7 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-sm text-white placeholder-zinc-600 outline-none transition-colors focus:border-white/30 focus:ring-1 focus:ring-white/30 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-white [&:-webkit-autofill]:transition-colors [&:-webkit-autofill]:duration-[9999s] [color-scheme:dark]"
+                className="h-12 w-full rounded-2xl border border-white/10 bg-white/4 px-4 text-sm text-white placeholder-zinc-600 outline-none transition-colors focus:border-white/30 focus:ring-1 focus:ring-white/30 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-white [&:-webkit-autofill]:transition-colors [&:-webkit-autofill]:duration-[9999s] scheme-dark"
               />
             </div>
 
@@ -157,6 +170,10 @@ export default function LoginPage() {
             >
               {loading ? "Please wait..." : isLogin ? "Login" : "Create Account"}
             </button>
+
+            {errorMessage && (
+              <p className="text-sm text-red-400">{errorMessage}</p>
+            )}
           </form>
 
           <div className="my-6 flex items-center justify-center space-x-4">
@@ -167,9 +184,9 @@ export default function LoginPage() {
 
           <button
             type="button"
-            className="flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] text-sm font-medium text-white transition-all hover:bg-white/[0.08] active:scale-[0.98]"
+            className="flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/4 text-sm font-medium text-white transition-all hover:bg-white/8 active:scale-[0.98]"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="size-[18px]" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" className="size-4.5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
               <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
               <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
