@@ -521,6 +521,7 @@ const deleteHistoryItem = (id) => {
             <h1 className="text-[36px] font-semibold tracking-[0.12em]">
               VARORA.AI
             </h1>
+            
 
             <button
               type="button"
@@ -530,10 +531,11 @@ const deleteHistoryItem = (id) => {
               <FiPlus size={24} />
               New Research
             </button>
+            
 
             <nav className="mt-10 space-y-7">
               {[
-                [FiClock, "Recent Research"],
+                [FiClock, " Research"],
                 [FiFileText, "Uploaded Files"],
                 [FiEdit3, "Saved Notes"],
                 [FiBookOpen, "Citations"],

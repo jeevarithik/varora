@@ -40,7 +40,7 @@ export default function Home() {
               Features
             </Link>
             <Link href="/" className="hover:text-white">
-              
+              Workspace
             </Link>
           </nav>
 
@@ -142,18 +142,36 @@ export default function Home() {
 
           <div className="mt-8 flex w-full flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href="/signup"
-              className="group flex h-12 w-52.5 items-center justify-center rounded-2xl bg-white text-sm font-semibold text-black transition hover:bg-zinc-200 hover:shadow-[0_0_24px_rgba(255,255,255,0.28)]"
-            >
-              Get Started
-            </Link>
+  href="/signup"
+  className="group/btn relative inline-flex h-12 min-w-[180px] items-center justify-center overflow-hidden rounded-full border border-white/15 bg-zinc-950 px-6 text-sm font-semibold text-white opacity-45 shadow-[0_0_18px_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.04] hover:opacity-100 hover:border-white/35 hover:shadow-[0_0_38px_rgba(255,255,255,0.22)] active:translate-y-0 active:scale-95"
+>
+  <span className="pointer-events-none absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-out group-hover/btn:w-full" />
 
-            <Link
-              href="/workspace"
-              className="group flex h-12 w-52.5 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-semibold text-white/75 transition hover:bg-white/10 hover:text-white"
-            >
-              Open Workspace
-            </Link>
+  <span className="pointer-events-none absolute -inset-1 rounded-full bg-white/20 opacity-0 blur-xl transition-opacity duration-300 group-hover/btn:opacity-100" />
+
+  <span className="pointer-events-none relative z-10 flex items-center gap-2 transition-colors duration-500 group-hover/btn:text-black">
+    Get Started
+    <span className="transition-transform duration-300 group-hover/btn:translate-x-1">
+      →
+    </span>
+  </span>
+</Link>
+
+           <Link
+  href="/workspace"
+  className="group/btn relative inline-flex h-12 min-w-[190px] items-center justify-center overflow-hidden rounded-full border border-white/15 bg-zinc-950 px-6 text-sm font-semibold text-white opacity-45 shadow-[0_0_18px_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.04] hover:opacity-100 hover:border-white/35 hover:shadow-[0_0_38px_rgba(255,255,255,0.22)] active:translate-y-0 active:scale-95"
+>
+  <span className="pointer-events-none absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-out group-hover/btn:w-full" />
+
+  <span className="pointer-events-none absolute -inset-1 rounded-full bg-white/20 opacity-0 blur-xl transition-opacity duration-300 group-hover/btn:opacity-100" />
+
+  <span className="pointer-events-none relative z-10 flex items-center gap-2 transition-colors duration-500 group-hover/btn:text-black">
+    Open Workspace
+    <span className="transition-transform duration-300 group-hover/btn:translate-x-1">
+      →
+    </span>
+  </span>
+</Link>
           </div>
         </div>
       </section>
