@@ -251,6 +251,7 @@ for (const file of files) {
 const processedFile = {
   name: `${files.length} files uploaded`,
   text: combinedText,
+  chunks: chunks,
   files: fileNames,
 };
       const readStreamingResponse = async (res, onToken) => {
@@ -281,21 +282,19 @@ const processedFile = {
       setUploadedFile(processedFile);
       uploadedFileRef.current = processedFile;
       if (session?.user?.id) {
-  fetch("/api/file/save", {
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      userId: session.user.id,
-      name: processedFile.name,
-      content: processedFile.text,
-      type: "document",
-    }),
-  });
-}
+        fetch("/api/file/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: session.user.id,
+            name: processedFile.name,
+            content: processedFile.text,
+            type: "document",
+          }),
+        });
+      }
 
       localStorage.setItem(
         "varora-uploaded-file",
