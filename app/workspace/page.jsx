@@ -808,6 +808,7 @@ export default function WorkspacePage() {
         </div>
       );
     }
+    
 
     if (activeSection === "files") {
       return (
