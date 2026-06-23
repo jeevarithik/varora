@@ -67,15 +67,55 @@ export async function POST(req) {
       });
     }
 
-   const chunks = extractedText.match(
-  /.{1,1500}(\s|$)/g
-) || [];
+    // Smart chunking: try to split on meaningful boundaries
+    let chunks = [];
+    
+    // First, try to split by common section markers
+    const sectionPatterns = [
+      /Question\s*\d+/gi,
+      /Q\d+/gi,
+      /^#{1,3}\s+.+$/gm,
+      /^\d+\.\s+.+$/gm,
+      /\n\n+/g
+    ];
+    
+    let bestSplit = null;
+    let bestSplitCount = 0;
+    
+    for (const pattern of sectionPatterns) {
+      const splits = extractedText.split(pattern);
+      if (splits.length > bestSplitCount && splits.length > 1) {
+        bestSplit = pattern;
+        bestSplitCount = splits.length;
+      }
+    }
+    
+    // If we found good section boundaries, use them
+    if (bestSplit && bestSplitCount > 2) {
+      const parts = extractedText.split(bestSplit);
+      chunks = parts
+        .map(part => part.trim())
+        .filter(part => part.length > 100)  // Only keep substantial chunks
+        .slice(0, 100);  // Cap at 100 chunks
+    }
+    
+    // If section splitting didn't work well, fall back to fixed-size chunks
+    if (chunks.length === 0) {
+      chunks = extractedText.match(
+        /.{1,1500}(\s|$)/g
+      ) || [];
+    }
+    
+    // If chunks are still empty, create one chunk
+    if (chunks.length === 0) {
+      chunks = [extractedText];
+    }
 
-return NextResponse.json({
-  fileName: file.name,
-  text: extractedText,
-  chunks,
-});
+    return NextResponse.json({
+      fileName: file.name,
+      text: extractedText,
+      chunks: chunks.filter(c => c && c.trim().length > 0),  // Remove empty chunks
+    });
   } catch (error) {
     console.error("Upload API error:", error);
 
